@@ -168,7 +168,10 @@ function randomGraph() {
 /* ================= DRAW ================= */
 
 function drawGraph(activeEdge = null) {
+  
+  svg.innerHTML = ""
   setupSvgDefs();
+  
 
   edges.forEach((e, i) => {
   const x1 = nodes[e.u].x;
@@ -368,7 +371,7 @@ function openManualEditor() {
   document.getElementById("manual-modal").classList.remove("hidden");
   resetManual();
   setupDefs();
-  createNodes();
+  createNodesModal();
   draw();
 }
 
@@ -392,7 +395,7 @@ function setupDefs() {
   const defs = svg("defs");
 
   const marker = svg("marker", {
-    id: "arrow",
+    id: "arrow-manual",
     viewBox: "0 0 10 10",
     refX: "9",
     refY: "5",
@@ -412,12 +415,13 @@ function setupDefs() {
 
 /* ================= NODES ================= */
 
-function createNodes() {
+function createNodesModal() {
   const n = Number(document.getElementById("vertexCount").value);
   const { width, height } = manualSvg.getBoundingClientRect();
   const cx = width / 2;
   const cy = height / 2;
   const r = Math.min(cx, cy) - 60;
+
 
   for (let i = 0; i < n; i++) {
     const a = (2 * Math.PI * i) / n - Math.PI / 2;
@@ -454,7 +458,7 @@ function drawEdge(e) {
   const line = svg("line", {
     x1, y1, x2, y2,
     class: "manual-edge",
-    "marker-end": "url(#arrow)"
+    "marker-end": "url(#arrow-manual)"
   });
 
   line.onclick = () => removeEdge(e);
@@ -623,7 +627,10 @@ function validateAndApply() {
 }));
 
   edges = manualEdges
+  
+
   drawGraph()
+  closeManualEditor()
 }
 
 /* ================= UI HELPERS ================= */

@@ -339,152 +339,178 @@ svg {
   padding: 16px;
 }
 
-/* ---------- HEADER ---------- */
+
+
+/* ================= MODAL HEADER ================= */
 .modal-header {
-  padding: 12px 16px;
+  padding: 16px 20px;
   border-bottom: 1px solid #e5e7eb;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+}
+
+#modal-heading {
+  font-size: 15px;
   font-weight: 600;
+  color: #000;
 }
 
 .modal-header button {
   border: none;
-  background: none;
+  background: transparent;
   font-size: 18px;
+  color: #000;
   cursor: pointer;
+  padding: 4px 8px;
 }
 
-/* ---------- SVG ---------- */
+.modal-header button:hover {
+  background: #f3f4f6;
+  border-radius: 6px;
+}
+
+/* ================= SVG AREA ================= */
 #manual-svg {
   flex: 1;
-  background: #f9fafb;
+  background: linear-gradient(#fafafa, #f5f5f5);
+  margin: 16px;
+  border-radius: 12px;
   cursor: crosshair;
 }
 
-/* ---------- FOOTER ---------- */
+/* ================= FOOTER / TOOLBAR ================= */
 .toolbar {
-  padding: 12px 16px;
+  padding: 14px 20px;
   border-top: 1px solid #e5e7eb;
+  background: #ffffff;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
+/* ================= BUTTONS ================= */
 button {
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: none;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #000;
   cursor: pointer;
+  transition: background 0.15s ease, border 0.15s ease;
+}
+
+button:hover {
+  background: #f3f4f6;
 }
 
 button.primary {
-  background: #2563eb;
-  color: white;
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+}
+
+button.primary:hover {
+  background: #111;
 }
 
 button.secondary {
-  background: #e5e7eb;
+  background: #ffffff;
 }
 
-/* ---------- GRAPH ---------- */
+/* ================= GRAPH ELEMENTS ================= */
+
+/* Nodes */
 .manual-node {
-  fill: white;
-  stroke: #374151;
-  stroke-width: 2;
+  fill: #ffffff;
+  stroke: #000;
+  stroke-width: 1.8;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.manual-node:hover {
+  fill: #f3f4f6;
 }
 
 .manual-node.selected {
-  stroke: #2563eb;
-  stroke-width: 3;
+  fill: #103ef6;
+  stroke-width: 2.2;
 }
 
-.manual-edge {
-  stroke: #374151;
-  stroke-width: 2;
-}
-
-.edge-weight {
-  font-size: 12px;
-  fill: #111827;
+/* Node labels */
+.node-label {
+  font-size: 11px;
+  font-weight: 600;
+  fill: #000000;
+  text-anchor: middle;
   pointer-events: none;
 }
 
-/* ---------- ERROR ---------- */
+/* Edges */
+.manual-edge {
+  stroke: #000;
+  stroke-width: 1.8;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.manual-edge:hover {
+  opacity: 0.75;
+}
+
+/* Edge weight */
+.edge-weight {
+  font-size: 10px;
+  font-weight: 500;
+  fill: #000;
+  pointer-events: none;
+  text-anchor: middle;
+
+}
+
+/* Edge weight background */
+.edge-weight-bg {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 0.8;
+  rx: 8;
+  ry: 8
+}
+
+/* ================= ERROR BADGE ================= */
 #manual-error {
   position: absolute;
-  bottom: 90px;
+  bottom: 96px;
   left: 50%;
   transform: translateX(-50%);
-  background: #fee2e2;
-  color: #991b1b;
+  background: #000;
+  color: #ffffff;
   padding: 6px 14px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 #manual-error.hidden {
   display: none;
 }
 
-/* ---------- EDGE MODAL ---------- */
+/* ================= EDGE MODAL ================= */
 .modal-actions {
+  padding-top: 12px;
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
 }
 
-.manual-node {
-  fill: #e5e7eb;
-  stroke: #374151;
-  stroke-width: 2;
-  cursor: pointer;
-}
-
-.manual-node.selected {
-  fill: #93c5fd;
-}
-
-.node-label {
-  font-size: 12px;
+/* ================= HEADING ================= */
+#modal-heading {
+  font-size: 16px;
   font-weight: 600;
-  text-anchor: middle;
-  fill: #111827;
-  pointer-events: none;
+  color: #111827;
 }
-
-.manual-edge {
-  stroke: #374151;
-  stroke-width: 2;
-  cursor: pointer;
-}
-
-.edge-weight {
-  font-size: 12px;
-  text-anchor: middle;
-  fill: #111827;
-  pointer-events: none;
-}
-
-.edge-weight-bg {
-  fill: #f9fafb;
-  stroke: #d1d5db;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
