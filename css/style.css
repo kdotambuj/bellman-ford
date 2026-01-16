@@ -81,6 +81,7 @@ body {
 .modeBtn:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+  background: linear-gradient(135deg, #1e42e4 0%, #764ba2 100%);
 }
 
 .modeBtn:active {
@@ -240,11 +241,106 @@ body {
 }
 
 .node.active {
-  fill: #bfdbfe;
+  fill: #f4f2ed;
+  stroke: #f59e0b;
+  stroke-width: 3;
 }
 
 .node.visited {
   fill: #93c5fd;
+}
+
+.node.source {
+  fill: rgb(230, 255, 230);
+  stroke: #16a34a;
+  stroke-width: 3;
+}
+
+.node.updated {
+  fill: #a78bfa;
+  stroke: #7c3aed;
+  stroke-width: 3;
+}
+
+.node.relaxed {
+  fill: #60a5fa;
+  stroke: #2563eb;
+  stroke-width: 3;
+}
+
+/* Distance Table */
+#distanceTable {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dist-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.8rem;
+  color: #1e293b;
+}
+
+.dist-row:last-child {
+  border-bottom: none;
+}
+
+.dist-row.source-row {
+  background: #dcfce7;
+  font-weight: 600;
+}
+
+.dist-row.updated-row {
+  background: #ede9fe;
+  animation: highlight 0.5s ease;
+}
+
+@keyframes highlight {
+  0% { background: #fbbf24; }
+  100% { background: #ede9fe; }
+}
+
+.dist-node {
+  font-weight: 500;
+}
+
+.dist-value {
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.dist-value.infinity {
+  color: #94a3b8;
+}
+
+#statusMessage {
+  margin-top: 2px;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  text-align: center;
+  color: #1e293b;
+}
+
+#statusMessage.info {
+  background: #e0f2fe;
+  border: 1px solid #7dd3fc;
+}
+
+#statusMessage.success {
+  background: #dcfce7;
+  border: 1px solid #86efac;
+}
+
+#statusMessage.warning {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
 }
 
 .edge {
