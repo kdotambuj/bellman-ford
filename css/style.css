@@ -350,6 +350,38 @@ body {
   transition: stroke 0.3s ease;
 }
 
+.edge-group {
+  cursor: pointer;
+}
+
+.edge-hit {
+  stroke: transparent;
+  stroke-width: 16;
+  fill: none;
+}
+
+.edge-delete {
+  display: none;
+}
+
+.edge-delete circle {
+  fill: #ef4444;
+  stroke: #b91c1c;
+  stroke-width: 1;
+}
+
+.edge-delete text {
+  fill: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.edge-group:hover .edge-delete {
+  display: block;
+}
+
 .edge.active {
   stroke: #2563eb;
 }
@@ -393,6 +425,12 @@ svg {
   pointer-events: none;
   dominant-baseline: middle;
   text-anchor: middle;
+}
+
+.edge-weight.editable {
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
 }
 
 

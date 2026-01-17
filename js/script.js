@@ -264,11 +264,13 @@ function randomGraph() {
 
 function drawGraph(activeEdge = null) {
 
-  svg.innerHTML = ""
+  svg.innerHTML = "";
   setupSvgDefs();
 
-
   edges.forEach((e, i) => {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.setAttribute("class", "edge-group");
+
     const x1 = nodes[e.u].x;
     const y1 = nodes[e.u].y;
     const x2 = nodes[e.v].x;
@@ -290,7 +292,7 @@ function drawGraph(activeEdge = null) {
     const endX = x2 - ux * nodeRadius;
     const endY = y2 - uy * nodeRadius;
 
-    // Draw edge
+    // Base edge line
     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
     line.setAttribute("x1", startX);
     line.setAttribute("y1", startY);
@@ -301,7 +303,16 @@ function drawGraph(activeEdge = null) {
       "class",
       `edge ${e.w < 0 ? "negative" : ""} ${activeEdge === i ? "active" : ""}`
     );
-    svg.appendChild(line);
+    group.appendChild(line);
+
+    // Hit zone for easier hovering/clicking
+    const hit = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    hit.setAttribute("x1", startX);
+    hit.setAttribute("y1", startY);
+    hit.setAttribute("x2", endX);
+    hit.setAttribute("y2", endY);
+    hit.setAttribute("class", "edge-hit");
+    group.appendChild(hit);
 
     // ---- WEIGHT POSITION (PERPENDICULAR OFFSET) ----
     const midX = (startX + endX) / 2;
@@ -315,14 +326,75 @@ function drawGraph(activeEdge = null) {
     const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
     label.setAttribute("x", midX + px);
     label.setAttribute("y", midY + py);
-    label.setAttribute("class", "edge-weight");
+    label.setAttribute("class", "edge-weight editable");
     label.textContent = e.w;
+    label.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      editEdgeWeight(i);
+    });
+    group.appendChild(label);
 
-    svg.appendChild(label);
+    // Delete badge shown on hover
+    const deleteOffset = 26;
+    const delX = midX + (-uy * deleteOffset);
+    const delY = midY + (ux * deleteOffset);
+    const deleteGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    deleteGroup.setAttribute("class", "edge-delete");
+
+    const delCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    delCircle.setAttribute("cx", delX);
+    delCircle.setAttribute("cy", delY);
+    delCircle.setAttribute("r", 10);
+    deleteGroup.appendChild(delCircle);
+
+    const delText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    delText.setAttribute("x", delX);
+    delText.setAttribute("y", delY + 1);
+    delText.textContent = "×";
+    deleteGroup.appendChild(delText);
+
+    deleteGroup.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      removeEdgeByIndex(i);
+    });
+
+    group.appendChild(deleteGroup);
+
+    svg.appendChild(group);
   });
 
 
   drawNodes();
+}
+
+function graphChanged(message) {
+  resetAlgorithm();
+  initializeDistances();
+  drawGraph();
+  setStatusMessage(`${message} Press Play to run Bellman-Ford algorithm.`, "info");
+}
+
+function removeEdgeByIndex(index) {
+  if (index < 0 || index >= edges.length) return;
+  edges.splice(index, 1);
+  graphChanged("Edge removed.");
+}
+
+function editEdgeWeight(index) {
+  const edge = edges[index];
+  if (!edge) return;
+
+  const input = window.prompt("Enter new weight for this edge", edge.w);
+  if (input === null) return;
+
+  const newWeight = Number(input);
+  if (Number.isNaN(newWeight)) {
+    window.alert("Please enter a valid number.");
+    return;
+  }
+
+  edges[index].w = newWeight;
+  graphChanged("Edge weight updated.");
 }
 
 
@@ -750,13 +822,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function draw() {
     manualSvg.innerHTML = manualSvg.innerHTML.split("</defs>")[0] + "</defs>";
-    manual.edges.forEach(drawEdge);
+    manual.edges.forEach((e, idx) => drawEdge(e, idx));
     manual.nodes.forEach(drawNode);
   }
 
   /* ================= EDGE ================= */
 
-  function drawEdge(e) {
+  function drawEdge(e, index) {
     const dx = e.x2 - e.x1;
     const dy = e.y2 - e.y1;
     const len = Math.hypot(dx, dy);
@@ -768,14 +840,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const x2 = e.x2 - ux * NODE_R;
     const y2 = e.y2 - uy * NODE_R;
 
+    const group = svg("g", { class: "edge-group" });
+
     const line = svg("line", {
       x1, y1, x2, y2,
       class: "manual-edge",
       "marker-end": "url(#arrow-manual)"
     });
+    group.appendChild(line);
 
-    line.onclick = () => removeEdge(e);
-    manualSvg.appendChild(line);
+    const hit = svg("line", {
+      x1, y1, x2, y2,
+      class: "edge-hit"
+    });
+    group.appendChild(hit);
 
     // perpendicular offset for text
     const px = -uy;
@@ -791,18 +869,42 @@ document.addEventListener("DOMContentLoaded", () => {
       ry: 6,
       width: 20,
       height: 18,
-      class: "edge-weight-bg"
+      class: "edge-weight-bg",
+      "pointer-events": "none"
     });
 
     const text = svg("text", {
       x: tx,
       y: ty + 5,
-      class: "edge-weight"
+      class: "edge-weight editable"
     });
     text.textContent = e.w;
+    text.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      editManualEdgeWeight(index);
+    });
 
-    manualSvg.appendChild(bg);
-    manualSvg.appendChild(text);
+    // delete badge
+    const deleteOffset = 26;
+    const delX = (x1 + x2) / 2 + (-uy * deleteOffset);
+    const delY = (y1 + y2) / 2 + (ux * deleteOffset);
+    const delGroup = svg("g", { class: "edge-delete" });
+    const delCircle = svg("circle", { cx: delX, cy: delY, r: 10 });
+    const delText = svg("text", { x: delX, y: delY + 1 });
+    delText.textContent = "×";
+
+    delGroup.appendChild(delCircle);
+    delGroup.appendChild(delText);
+    delGroup.addEventListener("click", (evt) => {
+      evt.stopPropagation();
+      removeEdgeAt(index);
+    });
+
+    group.appendChild(bg);
+    group.appendChild(text);
+    group.appendChild(delGroup);
+
+    manualSvg.appendChild(group);
   }
 
   /* ================= NODE ================= */
@@ -890,9 +992,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ================= REMOVE EDGE ================= */
 
-  function removeEdge(edge) {
-    manual.edges = manual.edges.filter(e => e !== edge);
+  function removeEdgeAt(index) {
+    const edge = manual.edges[index];
+    if (!edge) return;
+    manual.edges.splice(index, 1);
     manual.edgeSet.delete(`${edge.u}->${edge.v}`);
+    draw();
+  }
+
+  function editManualEdgeWeight(index) {
+    const edge = manual.edges[index];
+    if (!edge) return;
+    const input = window.prompt("Enter new weight for this edge", edge.w);
+    if (input === null) return;
+
+    const newWeight = Number(input);
+    if (Number.isNaN(newWeight)) {
+      window.alert("Please enter a valid number.");
+      return;
+    }
+
+    manual.edges[index].w = newWeight;
     draw();
   }
 
