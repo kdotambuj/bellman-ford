@@ -1,194 +1,168 @@
 <html>
-   <title>Bellman Ford Algorithm</title>
-   <meta charset="UTF-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   <link href="css/style.css" rel="stylesheet" />
+<title>Bellman Ford Algorithm</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="css/style.css" rel="stylesheet" />
 
-   <body>
-      <header id="title">Bellman Ford Algorithm</header>
+<body>
+   <!-- <header id="title">Bellman Ford Algorithm</header> -->
 
-      <div id="modeSelection">
-         <div id="modeSelectionContainer">
-            <h1>Bellmann Ford Algorithm</h1>
-            <p>Choose your learning mode:</p>
-            <div id="modeButtons">
-               <button class="modeBtn" data-mode="visualization">
-                  <span class="modeIcon">
-                     <svg
-                        viewBox="0 0 24 24"
-                        width="22"
-                        height="22"
-                        aria-hidden="true"
-                     >
-                        <!-- edges -->
-                        <line
-                           x1="12"
-                           y1="7"
-                           x2="6"
-                           y2="13"
-                           stroke="currentColor"
-                           stroke-width="2"
-                        />
-                        <line
-                           x1="12"
-                           y1="7"
-                           x2="18"
-                           y2="13"
-                           stroke="currentColor"
-                           stroke-width="2"
-                        />
+   <div id="modeSelection">
+      <div id="modeSelectionContainer">
+         <p>Choose your learning mode:</p>
+         <div id="modeButtons">
+            <button class="modeBtn" data-mode="visualization">
+               <span class="modeIcon">
+                  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                     <!-- edges -->
+                     <line x1="12" y1="7" x2="6" y2="13" stroke="currentColor" stroke-width="2" />
+                     <line x1="12" y1="7" x2="18" y2="13" stroke="currentColor" stroke-width="2" />
 
-                        <!-- nodes -->
-                        <circle cx="12" cy="5" r="2" fill="currentColor" />
-                        <circle cx="6" cy="15" r="2" fill="currentColor" />
-                        <circle cx="18" cy="15" r="2" fill="currentColor" />
-                     </svg>
-                  </span>
+                     <!-- nodes -->
+                     <circle cx="12" cy="5" r="2" fill="currentColor" />
+                     <circle cx="6" cy="15" r="2" fill="currentColor" />
+                     <circle cx="18" cy="15" r="2" fill="currentColor" />
+                  </svg>
+               </span>
 
-                  <span class="modeTitle">Visualization</span>
-                  <span class="modeDesc"
-                     >Watch step-by-step visual animations</span
-                  >
-               </button>
+               <span class="modeTitle">Visualization</span>
+               <span class="modeDesc">Watch step-by-step visual animations</span>
+            </button>
 
-               <button class="modeBtn" data-mode="code">
-                  <span class="modeIcon">
-                     <svg
-                        viewBox="0 0 24 24"
-                        width="22"
-                        height="22"
-                        aria-hidden="true"
-                     >
-                        <polyline
-                           points="9 6 3 12 9 18"
-                           fill="none"
-                           stroke="currentColor"
-                           stroke-width="2"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                        <polyline
-                           points="15 6 21 12 15 18"
-                           fill="none"
-                           stroke="currentColor"
-                           stroke-width="2"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                     </svg>
-                  </span>
+            <button class="modeBtn" data-mode="code">
+               <span class="modeIcon">
+                  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                     <polyline points="9 6 3 12 9 18" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                     <polyline points="15 6 21 12 15 18" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+               </span>
 
-                  <span class="modeTitle">Code Walkthrough</span>
-                  <span class="modeDesc">Follow the code line by line</span>
-               </button>
-            </div>
+               <span class="modeTitle">Code Walkthrough</span>
+               <span class="modeDesc">Follow the code line by line</span>
+            </button>
          </div>
       </div>
+   </div>
 
-      <div id="mainContainer">
-         <div id="container">
-            <div id="topPane">
-               <button id="backToModeSelection">
-                  ← Back to Mode Selection
-               </button>
-            </div>
+   <div id="mainContainer">
+      <div id="container">
+         <div id="topPane">
+            <button id="backToModeSelection">
+               ← Back to Mode Selection
+            </button>
+         </div>
 
-            <div id="mainPane">
-               <div id="visualSection">
-                  <!-- LEFT: CONTROLS -->
-                  <div id="visControls">
-                     <div class="controlGroup">
-                        <label>Vertices (3-6)</label>
-                        <input
-                           type="number"
-                           id="vertexCount"
-                           min="3"
-                           max="7"
-                           value="5"
-                        />
-                     </div>
+         <div id="mainPane">
+            <div id="visualSection">
+               <!-- LEFT: CONTROLS -->
+               <div id="visControls">
+                  <div class="controlGroup">
+                     <label>Vertices (3-6)</label>
+                     <input type="number" id="vertexCount" min="3" max="7" value="5" />
+                  </div>
 
-                     <div class="controlGroup">
-                        <label>Graph</label>
-                        <button id="randomGraphBtn">Random Graph</button>
-                        <button id="build-manually">Build Manually</button>
-                     </div>
+                  <div class="controlGroup">
+                     <label>Source Vertex</label>
+                     <input type="number" id="sourceVertex" min="0" max="6" value="0" />
+                  </div>
 
-                       <!-- ================= MAIN MODAL ================= -->
-                     <div id="manual-modal" class="modal hidden">
-                        <div class="modal-content">
+                  <div class="controlGroup">
+                     <label>Graph</label>
+                     <button id="randomGraphBtn">Random Graph</button>
+                     <button id="build-manually">Build Manually</button>
+                  </div>
 
-                           <div class="modal-header">
+                  <!-- ================= MAIN MODAL ================= -->
+                  <div id="manual-modal" class="modal hidden">
+                     <div class="modal-content">
+
+                        <div class="modal-header">
                            <span id="modal-heading">Build Graph</span>
                            <button class="close-manual">✕</button>
-                           </div>
+                        </div>
 
-                           <svg id="manual-svg"></svg>
+                        <div class="manual-instructions">
+                           <p>1. <strong>Click</strong> a node to select it (Yellow).</p>
+                           <p>2. <strong>Click</strong> another node to form an edge.</p>
+                           <p>3. Enter <strong>weight</strong> and click Add.</p>
+                           <p>4. Click <strong>Apply</strong> to finish.</p>
+                        </div>
+                        <svg id="manual-svg"></svg>
 
-                           <div class="toolbar">
+                        <div class="toolbar">
                            <button class="close-manual secondary">Cancel</button>
                            <button id="apply-manual" class="primary">Apply</button>
-                           </div>
-
-                           <div id="manual-error" class="hidden"></div>
                         </div>
-                     </div>
 
-                     <!-- ================= EDGE MODAL ================= -->
-                     <div id="edge-modal" class="modal hidden">
-                        <div class="modal-content small">
-                           <h3>Add Edge</h3>
-                           <p id="edge-info"></p>
-                           <input id="edge-weight" type="number" placeholder="Weight" />
-                           <div class="modal-actions">
+                        <div id="manual-error" class="hidden"></div>
+                     </div>
+                  </div>
+
+                  <!-- ================= EDGE MODAL ================= -->
+                  <div id="edge-modal" class="modal hidden">
+                     <div class="modal-content small">
+                        <h3>Add Edge</h3>
+                        <p id="edge-info"></p>
+                        <input id="edge-weight" type="number" placeholder="Weight" />
+                        <div class="modal-actions">
                            <button id="edge-cancel">Cancel</button>
                            <button id="edge-confirm" class="primary">Add</button>
-                           </div>
                         </div>
                      </div>
+                  </div>
 
-                     <div class="controlGroup">
-                        <label>Source Node</label>
-                        <select id="sourceNode"></select>
+                  <div class="controlGroup">
+                     <label>Speed</label>
+                     <select id="speedSelect">
+                        <option value="1200">Slow</option>
+                        <option value="700" selected>Normal</option>
+                        <option value="300">Fast</option>
+                     </select>
+                  </div>
+
+                  <div class="controlGroup">
+                     <label>Simulation</label>
+                     <div class="simButtons">
+                        <button id="playBtn">Play</button>
+                        <button id="nextBtn">Next Step</button>
+                        <button id="resetBtn">Reset</button>
                      </div>
+                  </div>
 
-                     <div class="controlGroup">
-                        <label>Speed</label>
-                        <select id="speedSelect">
-                           <option value="1200">Slow</option>
-                           <option value="700" selected>Normal</option>
-                           <option value="300">Fast</option>
-                        </select>
-                     </div>
+                  <div id="statusMessage" class="info"></div>
+                  <div id="statusMessage" class="info"></div>
 
-                     <div class="controlGroup">
-                        <label>Simulation</label>
-                        <div class="simButtons">
-                           <button id="playPauseBtn">Play</button>
-                           <button id="nextBtn">Next Step</button>
-                           <button id="resetBtn">Reset</button>
+                  <div id="analysisSection">
+                     <h3>Analysis</h3>
+                     <div class="analysis-grid">
+                        <div class="analysis-card">
+                           <span id="relaxCount" class="card-value">0</span>
+                           <span class="card-label">Relaxations</span>
+                        </div>
+                        <div class="analysis-card">
+                           <span id="complexityValue" class="card-value">O(0)</span>
+                           <span class="card-label">Complexity (VE)</span>
                         </div>
                      </div>
-
-                     <div class="controlGroup">
-                        <label>Distance Table</label>
-                        <div id="distanceTable"></div>
-                     </div>
-
-                     <div id="statusMessage"></div>
                   </div>
 
-                  <!-- RIGHT: GRAPH -->
-                  <div id="graphArea">
-                     <svg id="graphSvg"></svg>
-                  </div>
+                  <div id="distanceTable"></div>
                </div>
 
-               <div id="codeSection"></div>
+               <!-- RIGHT: GRAPH -->
+               <div id="graphArea">
+                  <svg id="graphSvg"></svg>
+               </div>
             </div>
+
+            <div id="codeSection"></div>
          </div>
       </div>
-   </body>
+   </div>
+</body>
 
-   <script src="js/script.js"></script>
+<script src="js/script.js"></script>
+
 </html>

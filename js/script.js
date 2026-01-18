@@ -13,13 +13,15 @@ const codeSection = $('codeSection');
 let visTimer = null;
 let codeTimer = null;
 
-// Bellman-Ford state
-let distances = [];
+// Bellman-Ford Globals
+let nodes = [];
+let edges = [];
 let sourceNode = 0;
-let algorithmSteps = [];
-let currentStepIndex = 0;
-let isAlgorithmComplete = false;
-let nodeStates = {}; // Track node states for coloring
+let distances = [];
+let predecessors = []; // Add global predecessors
+let nodeStates = {};
+let isPlaying = false;
+let algorithmSteps = []; // Track algorithm steps
 
 modeButtons.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -72,10 +74,10 @@ backToModeSelectionBtn.addEventListener('click', () => {
 // ----------------------------- Graph Visualization -----------------------------
 const svg = $("graphSvg");
 
-let nodes = [];
-let edges = [];
+// let nodes = []; // Moved to Bellman-Ford Globals
+// let edges = []; // Moved to Bellman-Ford Globals
 let currentEdgeIndex = 0;
-let isPlaying = false;
+// let isPlaying = false; // Moved to Bellman-Ford Globals
 
 /* ================= SVG SETUP ================= */
 
@@ -129,16 +131,29 @@ function createNodes(n) {
 /* ================= SOURCE NODE SELECTOR ================= */
 
 function updateSourceNodeSelector() {
-  const sourceSelect = $("sourceNode");
-  if (!sourceSelect) return;
+  const sourceInput = $("sourceVertex");
+  if (!sourceInput) return;
+  sourceInput.value = sourceNode;
+  sourceInput.max = nodes.length - 1;
+}
 
-  sourceSelect.innerHTML = "";
-  nodes.forEach(n => {
-    const option = document.createElement("option");
-    option.value = n.id;
-    option.textContent = `Node ${n.id}`;
-    if (n.id === sourceNode) option.selected = true;
-    sourceSelect.appendChild(option);
+// Event listener for Source Vertex Input
+const sourceInput = $("sourceVertex");
+if (sourceInput) {
+  sourceInput.addEventListener("change", () => {
+    let val = parseInt(sourceInput.value);
+    if (isNaN(val)) val = 0;
+
+    if (val < 0) val = 0;
+    if (val >= nodes.length) val = nodes.length - 1;
+
+    sourceInput.value = val;
+    sourceNode = val;
+
+    // Reset and redraw
+    resetAlgorithm();
+    initializeDistances();
+    drawGraph();
   });
 }
 
@@ -147,6 +162,7 @@ function updateSourceNodeSelector() {
 function initializeDistances() {
   distances = [];
   nodeStates = {};
+  predecessors = Array(nodes.length).fill("-"); // Track Prev
 
   nodes.forEach(n => {
     distances[n.id] = n.id === sourceNode ? 0 : Infinity;
@@ -162,33 +178,35 @@ function renderDistanceTable(updatedNode = null) {
 
   tableDiv.innerHTML = "";
 
+  // Header
+  const header = document.createElement("div");
+  header.className = "dist-header";
+  header.innerHTML = `<span>Node</span><span>Dist</span><span>Prev</span>`;
+  tableDiv.appendChild(header);
+
   nodes.forEach(n => {
     const row = document.createElement("div");
     row.className = "dist-row";
 
-    if (n.id === sourceNode) {
-      row.classList.add("source-row");
-    }
-    if (updatedNode === n.id) {
-      row.classList.add("updated-row");
-    }
+    if (n.id === sourceNode) row.classList.add("source-row");
+    if (updatedNode === n.id) row.classList.add("updated-row");
 
-    const nodeLabel = document.createElement("span");
-    nodeLabel.className = "dist-node";
-    nodeLabel.textContent = `Node ${n.id}`;
+    // Col 1: Node
+    const colNode = document.createElement("span");
+    colNode.textContent = n.id;
 
-    const distValue = document.createElement("span");
-    distValue.className = "dist-value";
+    // Col 2: Dist
+    const colDist = document.createElement("span");
+    const d = distances[n.id];
+    colDist.textContent = d === Infinity ? "∞" : d;
 
-    if (distances[n.id] === Infinity) {
-      distValue.textContent = "∞";
-      distValue.classList.add("infinity");
-    } else {
-      distValue.textContent = distances[n.id];
-    }
+    // Col 3: Prev
+    const colPrev = document.createElement("span");
+    colPrev.textContent = predecessors[n.id] !== undefined ? predecessors[n.id] : "-";
 
-    row.appendChild(nodeLabel);
-    row.appendChild(distValue);
+    row.appendChild(colNode);
+    row.appendChild(colDist);
+    row.appendChild(colPrev);
     tableDiv.appendChild(row);
   });
 }
@@ -248,11 +266,18 @@ function randomGraph() {
   // Reset algorithm state
   resetAlgorithm();
 
-  // Update source node selector
-  updateSourceNodeSelector();
+  // Initialize distances
+  initializeDistances();
+  updateSourceNodeSelector(); // Keep this but update the function to work with input
+
 
   // Initialize distances
   initializeDistances();
+
+  // Calc Complexity O(VE)
+  const complexity = n * edges.length;
+  const complexityEl = document.getElementById("complexityValue");
+  if (complexityEl) complexityEl.textContent = `O(${complexity})`;
 
   drawGraph();
   setStatusMessage("Graph generated. Press Play to run Bellman-Ford algorithm.", "info");
@@ -343,14 +368,29 @@ function drawNodes() {
     }
     c.setAttribute("class", nodeClass);
 
+    // Node ID
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.setAttribute("x", n.x);
     text.setAttribute("y", n.y + 5);
     text.setAttribute("class", "node-text");
     text.textContent = n.id;
 
+    // Distance Label (new)
+    const distText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    distText.setAttribute("x", n.x);
+    distText.setAttribute("y", n.y - 25);
+    distText.setAttribute("class", "node-dist");
+    distText.setAttribute("text-anchor", "middle");
+    distText.setAttribute("fill", "#000");
+    distText.setAttribute("font-size", "12px");
+    distText.setAttribute("font-weight", "bold");
+
+    const d = distances[n.id];
+    distText.textContent = d === Infinity ? "∞" : d;
+
     g.appendChild(c);
     g.appendChild(text);
+    g.appendChild(distText);
     svg.appendChild(g);
   });
 }
@@ -361,11 +401,17 @@ function drawNodes() {
 function generateBellmanFordSteps() {
   algorithmSteps = [];
   const n = nodes.length;
+  const V = n; // Number of vertices
+  const E = edges.length; // Number of edges
   const dist = [];
+  const currentPredecessors = Array(n).fill("-"); // Local predecessors for step generation
 
   // Initialize distances
   nodes.forEach(node => {
     dist[node.id] = node.id === sourceNode ? 0 : Infinity;
+    if (node.id === sourceNode) {
+      currentPredecessors[node.id] = "-"; // Source has no predecessor
+    }
   });
 
   // Add initial step
@@ -373,51 +419,62 @@ function generateBellmanFordSteps() {
     type: 'init',
     message: `Initialize: Source node ${sourceNode} = 0, all others = ∞`,
     distances: [...dist],
+    predecessors: [...currentPredecessors],
     activeEdge: null,
     activeNodes: [sourceNode],
     updatedNode: null
   });
 
-  // Bellman-Ford: Relax all edges (V-1) times
-  for (let i = 0; i < n - 1; i++) {
+  let relaxCount = 0; // Track relaxations
+
+  // Run Bellman-Ford
+  for (let i = 0; i < V - 1; i++) {
     let relaxedInThisIteration = false;
 
+    // Step: Start Iteration
     algorithmSteps.push({
       type: 'iteration-start',
-      message: `Iteration ${i + 1} of ${n - 1}: Checking all edges`,
+      message: `Iteration ${i + 1} of ${V - 1}: Relaxing all edges...`,
       distances: [...dist],
+      predecessors: [...currentPredecessors],
       activeEdge: null,
       activeNodes: [],
-      updatedNode: null
+      updatedNode: null,
+      relaxCount: relaxCount // Pass current count
     });
 
-    for (let j = 0; j < edges.length; j++) {
+    for (let j = 0; j < E; j++) {
       const edge = edges[j];
       const { u, v, w } = edge;
 
-      // Step: Examining edge
+      // Step: Check Edge
       algorithmSteps.push({
-        type: 'examine',
-        message: `Examining edge ${u} → ${v} (weight: ${w})`,
+        type: 'check',
+        message: `Checking edge ${u} → ${v} (weight ${w})`,
         distances: [...dist],
+        predecessors: [...currentPredecessors],
         activeEdge: j,
         activeNodes: [u, v],
-        updatedNode: null
+        updatedNode: null,
+        relaxCount: relaxCount
       });
 
-      // Check if we can relax
       if (dist[u] !== Infinity && dist[u] + w < dist[v]) {
-        const oldDist = dist[v];
         dist[v] = dist[u] + w;
+        currentPredecessors[v] = u; // Track predecessor
         relaxedInThisIteration = true;
+        relaxCount++; // Increment relaxation count
 
+        // Step: Relax Edge
         algorithmSteps.push({
           type: 'relax',
-          message: `Relaxed: dist[${v}] = ${oldDist === Infinity ? '∞' : oldDist} → ${dist[v]} (via ${u})`,
+          message: `Relaxing edge ${u} → ${v}. Distance to ${v} updated to ${dist[v]}.`,
           distances: [...dist],
+          predecessors: [...currentPredecessors], // Snapshot predecessors
           activeEdge: j,
           activeNodes: [u, v],
-          updatedNode: v
+          updatedNode: v,
+          relaxCount: relaxCount
         });
       } else {
         algorithmSteps.push({
@@ -426,7 +483,6 @@ function generateBellmanFordSteps() {
           distances: [...dist],
           activeEdge: j,
           activeNodes: [u, v],
-          updatedNode: null
         });
       }
     }
@@ -468,6 +524,7 @@ function generateBellmanFordSteps() {
       type: 'complete',
       message: '✓ Algorithm complete! Shortest paths found.',
       distances: [...dist],
+      predecessors: [...currentPredecessors],
       activeEdge: null,
       activeNodes: [],
       updatedNode: null
@@ -480,6 +537,8 @@ function generateBellmanFordSteps() {
 function executeStep(step) {
   // Update distances
   distances = [...step.distances];
+  if (step.predecessors) predecessors = [...step.predecessors]; // Restore predecessors
+
 
   // Reset all node states
   nodes.forEach(n => {
@@ -513,6 +572,12 @@ function executeStep(step) {
   if (step.type === 'complete') msgType = 'success';
 
   setStatusMessage(step.message, msgType);
+
+  // Update Analysis Relax Count
+  const relaxEl = document.getElementById("relaxCount");
+  if (relaxEl && step.relaxCount !== undefined) {
+    relaxEl.textContent = step.relaxCount;
+  }
 }
 
 function runNextStep() {
@@ -571,9 +636,9 @@ vertexInput.addEventListener("change", () => {
   randomGraph();
 });
 
-const playPauseBtn = $("playPauseBtn");
-if (playPauseBtn) {
-  playPauseBtn.onclick = () => {
+const playBtn = $("playBtn");
+if (playBtn) {
+  playBtn.onclick = () => {
     if (isPlaying) {
       // Pause
       if (visTimer) {
@@ -581,7 +646,7 @@ if (playPauseBtn) {
         visTimer = null;
       }
       isPlaying = false;
-      playPauseBtn.textContent = 'Play';
+      playBtn.textContent = 'Play';
     } else {
       // Start/Resume playing
       if (isAlgorithmComplete || algorithmSteps.length === 0) {
@@ -602,7 +667,7 @@ if (playPauseBtn) {
       }, speed);
 
       isPlaying = true;
-      playPauseBtn.textContent = 'Pause';
+      playBtn.textContent = 'Pause';
     }
   };
 }
@@ -643,16 +708,7 @@ if (resetBtn) {
 }
 
 // Source node selector handler
-const sourceSelect = $("sourceNode");
-if (sourceSelect) {
-  sourceSelect.addEventListener("change", () => {
-    sourceNode = Number(sourceSelect.value);
-    resetAlgorithm();
-    initializeDistances();
-    drawGraph();
-    setStatusMessage(`Source node changed to ${sourceNode}. Press Play to run.`, "info");
-  });
-}
+
 
 
 // ---------------- MANUAL GRAPH BUILDER ----------------
@@ -899,54 +955,37 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ================= DAG VALIDATION ================= */
 
   function validateAndApply() {
-    const n = manual.nodes.length;
-    const adj = Array.from({ length: n }, () => []);
-    const indeg = Array(n).fill(0);
-
-    for (const e of manual.edges) {
-      if (e.u === e.v) {
-        showError(`Self loop detected at node ${e.u}`);
-        return;
-      }
-      adj[e.u].push(e.v);
-      indeg[e.v]++;
-    }
-
-    // Kahn’s algorithm
-    const q = [];
-    indeg.forEach((d, i) => d === 0 && q.push(i));
-
-    let visited = 0;
-    while (q.length) {
-      const u = q.shift();
-      visited++;
-      for (const v of adj[u]) {
-        if (--indeg[v] === 0) q.push(v);
-      }
-    }
-
-    if (visited !== n) {
-      showError(
-        "Cycle detected.\nFix by removing at least one edge from the cycle."
-      );
-      return;
-    }
-
-    // showSuccess("Valid DAG Graph applied successfully");
+    // For Bellman-Ford, cycles and self-loops are allowed.
+    // We just take the edges as is.
     var manualEdges = manual.edges.map(e => ({
       u: e.u,
       v: e.v,
       w: e.w
     }));
 
-    edges = manualEdges
+    edges = manualEdges;
+    createNodes(manual.nodes.length); // Ensure global nodes match manual nodes count/pos? 
+    // Actually manual.nodes has positions. global nodes array should match.
+    // We need to sync global 'nodes' with 'manual.nodes' positions if they differ?
+    // manual.nodes has {id, x, y}. global nodes has {id, x, y}.
+    // manual.nodes might have different count.
 
-    // Reset algorithm and reinitialize distances
+    // Update global nodes
+    nodes = manual.nodes.map(n => ({ id: n.id, x: n.x, y: n.y }));
+
+    // Sync Vertex Count Input
+    const vInput = $("vertexCount");
+    if (vInput) vInput.value = nodes.length;
+
+    // Reset algorithm state
     resetAlgorithm();
-    initializeDistances();
 
-    drawGraph()
-    closeManualEditor()
+    // Initialize distances and inputs
+    initializeDistances();
+    updateSourceNodeSelector();
+
+    drawGraph();
+    closeManualEditor();
     setStatusMessage("Manual graph applied. Press Play to run Bellman-Ford algorithm.", "info");
   }
 

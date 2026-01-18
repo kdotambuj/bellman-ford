@@ -5,8 +5,8 @@
   box-sizing: border-box;
 }
 
-[hidden]{
-    display:none !important
+[hidden] {
+  display: none !important
 }
 
 html,
@@ -14,7 +14,11 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  /* Dynamic height for embedding */
+  width: 100%;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow: hidden;
+  /* Let children handle scroll */
 }
 
 body {
@@ -25,11 +29,15 @@ body {
 
 /* Mode Selection Screen */
 #modeSelection {
-  height: 100vh;
+  height: 100%;
+  /* Fill parent */
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 20px;
+  overflow-y: auto;
+  /* Internal scroll if parent too small */
 }
 
 #modeSelectionContainer {
@@ -63,25 +71,25 @@ body {
 }
 
 .modeBtn {
-  background: linear-gradient(135deg, #1e42e4 0%, #764ba2 100%);
+  background: #2980b9;
+  /* Sober Blue */
   color: white;
   border: none;
-  border-radius: 12px;
-  padding: 10px 25px;
+  border-radius: 6px;
+  padding: 15px 25px;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: background 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
   min-width: 200px;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .modeBtn:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-  background: linear-gradient(135deg, #1e42e4 0%, #764ba2 100%);
+  background: #3498db;
+  transform: translateY(-2px);
 }
 
 .modeBtn:active {
@@ -104,25 +112,72 @@ body {
 
 
 #mainContainer {
-  height: 95vh;
+  height: 100%;
+  /* Fill parent */
+  width: 100%;
+  display: none;
+  /* JS toggles this to flex */
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 20px;
   background: transparent;
-  display: none;
+  overflow: hidden;
+  /* Container inside handles scroll */
 }
 
 #container {
-  width: 95%;
+  width: 100%;
+  max-width: 1400px;
   height: 100%;
-  max-height: 100vh;
+  /* Fill mainContainer */
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
-  padding: 40px 30px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
+  overflow-y: auto;
+  /* Internal scroll for content */
+}
+
+/* Virtual Labs Header */
+#vl-header {
+  background: #fff;
+  border-bottom: 4px solid #d35400;
+  /* Sober Orange */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  box-shadow: none;
+}
+
+.vl-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #2980b9;
+  /* Sober Matte Blue */
+  text-align: center;
+  flex: 1;
+}
+
+.vl-btn {
+  background: #2980b9;
+  /* Sober Matte Blue */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.vl-btn:hover {
+  background: #3498db;
+  /* Slightly lighter blue on hover */
 }
 
 /* Top pane: main radio tabs */
@@ -159,29 +214,82 @@ body {
   display: flex;
   gap: 12px;
   height: 80vh;
-  max-height: 600px;
+  /* removed max-height to prevent cutting off controls */
   padding: 8px;
 }
 
 /* ---------- Left Controls ---------- */
 
 #visControls {
-  width: 300px;
+  width: 320px;
+  /* Slightly wider for table/analysis */
   background: #ffffff;
   border: 1px solid black;
   border-radius: 10px;
   padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   font-size: 0.78rem;
+  overflow-y: auto;
+  /* Allow scrolling if controls get long */
+}
+
+/* Analysis Section */
+#analysisSection {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 10px;
+}
+
+#analysisSection h3 {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.analysis-card {
+  background: #2980b9;
+  /* Match Random Graph button (Blue) */
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 8px;
+  /* Compact padding */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-value {
+  font-size: 1.1rem;
+  /* Smaller font */
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.card-label {
+  font-size: 0.65rem;
+  /* Smaller label */
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-top: 2px;
 }
 
 .controlGroup label {
   font-weight: 500;
   margin-bottom: 4px;
   display: block;
-  color:black
+  color: black
 }
 
 .controlGroup input,
@@ -194,17 +302,20 @@ body {
 }
 
 .controlGroup button {
-  padding: 5px 10px;
-  border-radius: 25px;
-  border: none;
-  background: #355dfd;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #2980b9;
+  background: #2980b9;
+  /* Sober Blue */
   color: white;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
 .controlGroup button:hover {
-  background: #355dfd;
+  background: #3498db;
+  border-color: #3498db;
 }
 
 .simButtons {
@@ -268,90 +379,110 @@ body {
   stroke-width: 3;
 }
 
-/* Distance Table */
+/* Distance Table (Grid Layout) */
 #distanceTable {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 8px;
-  max-height: 200px;
-  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  /* removed max-height and overflow-y to allow full section scrolling */
+  font-size: 0.8rem;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dist-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background: #2980b9;
+  /* Match Analysis cards & Random Graph button */
+  color: white;
+  padding: 6px;
+  font-weight: 600;
+  text-align: center;
+  position: sticky;
+  top: 0;
 }
 
 .dist-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 4px 6px;
   border-bottom: 1px solid #e2e8f0;
-  font-size: 0.8rem;
-  color: #1e293b;
-}
-
-.dist-row:last-child {
-  border-bottom: none;
-}
-
-.dist-row.source-row {
-  background: #dcfce7;
-  font-weight: 600;
-}
-
-.dist-row.updated-row {
-  background: #ede9fe;
-  animation: highlight 0.5s ease;
-}
-
-@keyframes highlight {
-  0% { background: #fbbf24; }
-  100% { background: #ede9fe; }
-}
-
-.dist-node {
+  text-align: center;
+  align-items: center;
+  color: #0f172a;
+  /* Force dark text */
   font-weight: 500;
 }
 
-.dist-value {
-  font-family: monospace;
-  font-weight: 600;
-}
-
-.dist-value.infinity {
-  color: #94a3b8;
-}
-
-#statusMessage {
-  margin-top: 2px;
-  padding: 8px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  text-align: center;
-  color: #1e293b;
-}
+/* Removed duplicate/old table styles */
 
 #statusMessage.info {
   background: #e0f2fe;
   border: 1px solid #7dd3fc;
+  color: #0c4a6e;
+  /* Dark Blue for good contrast */
 }
 
 #statusMessage.success {
   background: #dcfce7;
   border: 1px solid #86efac;
+  color: #14532d;
+  /* Dark Green */
 }
 
 #statusMessage.warning {
   background: #fef3c7;
   border: 1px solid #fcd34d;
+  color: #78350f;
+  /* Dark Amber */
+}
+
+button#resetBtn {
+  background: #d35400;
+  /* Sober Orange for Reset */
+  border-color: #d35400;
+}
+
+button#resetBtn:hover {
+  background: #e67e22;
+  border-color: #e67e22;
+}
+
+button#playBtn {
+  background: #27ae60;
+  /* Green for Play/Run - Optional, or keep Blue */
+  border-color: #27ae60;
+}
+
+button#playBtn:hover {
+  background: #2ecc71;
+  border-color: #2ecc71;
+}
+
+/* Distance Table */
+/* Consolidated Table Styles Above */
+
+/* Consolidated styles are above. */
+
+/* Remove old table styles if conflicting */
+#distTable th {
+  display: none;
 }
 
 .edge {
-  stroke: #475569;
+  stroke: #7f8c8d;
+  /* Dark Gray for inactive edges */
   stroke-width: 2;
   marker-end: url(#arrow);
   transition: stroke 0.3s ease;
 }
 
 .edge.active {
-  stroke: #2563eb;
+  stroke: #d35400;
+  /* Sober Orange for active edges */
+  stroke-width: 3;
 }
 
 .edge.negative {
@@ -365,8 +496,29 @@ svg {
 
 .node {
   fill: #fff;
-  stroke: #333;
+  stroke: #34495e;
+  /* Dark Blue-Gray Stroke */
   stroke-width: 2;
+}
+
+.node.source {
+  fill: #27ae60;
+  /* Sober Green */
+  stroke: #2ecc71;
+  color: white;
+  /* For text if needed */
+}
+
+.node.active {
+  fill: #f39c12;
+  /* Sober Yellow/Amber */
+  stroke: #f1c40f;
+}
+
+.node.updated {
+  fill: #e67e22;
+  /* Sober Orange */
+  stroke: #d35400;
 }
 
 .node-text {
@@ -405,7 +557,7 @@ svg {
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -425,7 +577,7 @@ svg {
   border-radius: 12px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   overflow: hidden;
 }
 
@@ -522,8 +674,9 @@ button.secondary {
 /* Nodes */
 .manual-node {
   fill: #ffffff;
-  stroke: #000;
-  stroke-width: 1.8;
+  stroke: #34495e;
+  /* Sober Dark Blue-Gray */
+  stroke-width: 2;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -533,8 +686,10 @@ button.secondary {
 }
 
 .manual-node.selected {
-  fill: #103ef6;
-  stroke-width: 2.2;
+  fill: #f39c12;
+  /* Sober Yellow */
+  stroke: #e67e22;
+  stroke-width: 2.5;
 }
 
 /* Node labels */
@@ -548,14 +703,16 @@ button.secondary {
 
 /* Edges */
 .manual-edge {
-  stroke: #000;
-  stroke-width: 1.8;
+  stroke: #7f8c8d;
+  /* Sober Gray */
+  stroke-width: 2;
   cursor: pointer;
-  transition: opacity 0.15s ease;
+  transition: stroke 0.15s ease;
 }
 
 .manual-edge:hover {
-  opacity: 0.75;
+  stroke: #d35400;
+  /* Sober Orange */
 }
 
 /* Edge weight */
@@ -603,6 +760,28 @@ button.secondary {
   gap: 12px;
 }
 
+/* ================= MODAL TEXT VISIBILITY FIX ================= */
+.modal-content h3 {
+  color: #111827;
+  /* distinct dark color */
+  margin-top: 0;
+}
+
+#edge-info {
+  color: #374151;
+  /* readable gray */
+  margin-bottom: 12px;
+}
+
+.modal-content input {
+  color: #111827;
+  border-color: #d1d5db;
+}
+
+.modal-content input::placeholder {
+  color: #9ca3af;
+}
+
 /* ================= HEADING ================= */
 #modal-heading {
   font-size: 16px;
@@ -610,3 +789,26 @@ button.secondary {
   color: #111827;
 }
 
+/* Manual Instructions */
+.manual-instructions {
+  background: #f1f5f9;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.manual-instructions p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #334155;
+  font-weight: 500;
+}
+
+.manual-instructions strong {
+  color: #0f172a;
+}
