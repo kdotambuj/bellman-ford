@@ -13,12 +13,12 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  /* Dynamic height for embedding */
+  min-height: 100vh;
+  /* Use min-height for embedding compatibility */
   width: 100%;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  overflow: hidden;
-  /* Let children handle scroll */
+  overflow-x: hidden;
+  /* Allow vertical scroll when embedded */
 }
 
 body {
@@ -29,8 +29,8 @@ body {
 
 /* Mode Selection Screen */
 #modeSelection {
-  height: 100%;
-  /* Fill parent */
+  min-height: 100vh;
+  /* Use viewport height for both standalone and embedded */
   width: 100%;
   display: flex;
   align-items: center;
@@ -112,8 +112,8 @@ body {
 
 
 #mainContainer {
-  height: 100%;
-  /* Fill parent */
+  min-height: 100vh;
+  /* Flexible height for embedding */
   width: 100%;
   display: none;
   /* JS toggles this to flex */
@@ -122,15 +122,17 @@ body {
   justify-content: center;
   padding: 20px;
   background: transparent;
-  overflow: hidden;
-  /* Container inside handles scroll */
+  overflow-x: hidden;
+  /* Allow vertical scroll when embedded */
 }
 
 #container {
   width: 100%;
   max-width: 1400px;
-  height: 100%;
-  /* Fill mainContainer */
+  flex: 1;
+  /* Grow to fill available space */
+  min-height: 0;
+  /* Allow flexbox shrinking */
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
@@ -213,8 +215,12 @@ body {
 #visualSection {
   display: flex;
   gap: 12px;
-  height: 80vh;
-  /* removed max-height to prevent cutting off controls */
+  height: calc(100vh - 200px);
+  /* Dynamic height accounting for navbar/padding */
+  min-height: 600px;
+  /* Minimum usable height */
+  max-height: 900px;
+  /* Maximum height to prevent overflow */
   padding: 8px;
 }
 
@@ -811,4 +817,53 @@ button.secondary {
 
 .manual-instructions strong {
   color: #0f172a;
+}
+
+/* ================= RESPONSIVE MEDIA QUERIES ================= */
+
+/* For embedded mode or smaller viewports */
+@media (max-height: 800px) {
+  #visualSection {
+    height: calc(100vh - 150px);
+    min-height: 500px;
+  }
+
+  #container {
+    padding: 20px;
+  }
+}
+
+/* For very small viewports or heavily embedded scenarios */
+@media (max-height: 600px) {
+  #visualSection {
+    height: calc(100vh - 100px);
+    min-height: 400px;
+  }
+
+  #mainContainer {
+    padding: 10px;
+  }
+
+  #container {
+    padding: 15px;
+    gap: 15px;
+  }
+}
+
+/* Tablet and smaller screens */
+@media (max-width: 1024px) {
+  #visualSection {
+    flex-direction: column;
+    height: auto;
+    min-height: 800px;
+  }
+
+  #visControls {
+    width: 100%;
+    max-height: 300px;
+  }
+
+  #graphArea {
+    min-height: 500px;
+  }
 }
