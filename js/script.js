@@ -610,8 +610,11 @@ function resetAlgorithm() {
   currentStepIndex = 0;
   algorithmSteps = [];
 
-  const playBtn = $("playPauseBtn");
+  const playBtn = $("playBtn");
   if (playBtn) playBtn.textContent = 'Play';
+
+  const relaxEl = document.getElementById("relaxCount");
+  if (relaxEl) relaxEl.textContent = "0";
 }
 
 /* ================= BUTTON HANDLERS ================= */
