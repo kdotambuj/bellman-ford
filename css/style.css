@@ -260,11 +260,11 @@ body {
   padding-top: 10px;
 }
 
-#distanceSection {
+#distanceSection, #distanceSectionVis {
   margin-top: 10px;
 }
 
-#distanceSection h3 {
+#distanceSection h3, #distanceSectionVis h3 {
   margin: 0 0 6px 0;
   font-size: 0.9rem;
   color: #374151;

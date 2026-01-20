@@ -105,10 +105,14 @@ modeButtons.forEach(btn => {
       visualSection.style.display = "flex";
       codeSection.classList.remove("active");
       codeSection.style.display = "none";
+      const visDist = document.getElementById('distanceSectionVis');
+      if (visDist) visDist.style.display = 'block';
     } else {
       visualSection.style.display = "flex";
       codeSection.style.display = "block";
       codeSection.classList.add("active");
+      const visDist = document.getElementById('distanceSectionVis');
+      if (visDist) visDist.style.display = 'none';
     }
 
     // Draw initially
@@ -249,41 +253,47 @@ function initializeDistances() {
 }
 
 function renderDistanceTable(updatedNode = null) {
-  const tableDiv = $("distanceTable");
-  if (!tableDiv) return;
+  const containers = [
+    $("distanceTable"),     // Code walkthrough panel
+    $("distanceTableVis")   // Visualization left panel
+  ].filter(Boolean);
 
-  tableDiv.innerHTML = "";
+  if (containers.length === 0) return;
 
-  // Header
-  const header = document.createElement("div");
-  header.className = "dist-header";
-  header.innerHTML = `<span>Node</span><span>Dist</span><span>Prev</span>`;
-  tableDiv.appendChild(header);
+  containers.forEach(tableDiv => {
+    tableDiv.innerHTML = "";
 
-  nodes.forEach(n => {
-    const row = document.createElement("div");
-    row.className = "dist-row";
+    // Header
+    const header = document.createElement("div");
+    header.className = "dist-header";
+    header.innerHTML = `<span>Node</span><span>Dist</span><span>Prev</span>`;
+    tableDiv.appendChild(header);
 
-    if (n.id === sourceNode) row.classList.add("source-row");
-    if (updatedNode === n.id) row.classList.add("updated-row");
+    nodes.forEach(n => {
+      const row = document.createElement("div");
+      row.className = "dist-row";
 
-    // Col 1: Node
-    const colNode = document.createElement("span");
-    colNode.textContent = n.id;
+      if (n.id === sourceNode) row.classList.add("source-row");
+      if (updatedNode === n.id) row.classList.add("updated-row");
 
-    // Col 2: Dist
-    const colDist = document.createElement("span");
-    const d = distances[n.id];
-    colDist.textContent = d === Infinity ? "∞" : d;
+      // Col 1: Node
+      const colNode = document.createElement("span");
+      colNode.textContent = n.id;
 
-    // Col 3: Prev
-    const colPrev = document.createElement("span");
-    colPrev.textContent = predecessors[n.id] !== undefined ? predecessors[n.id] : "-";
+      // Col 2: Dist
+      const colDist = document.createElement("span");
+      const d = distances[n.id];
+      colDist.textContent = d === Infinity ? "∞" : d;
 
-    row.appendChild(colNode);
-    row.appendChild(colDist);
-    row.appendChild(colPrev);
-    tableDiv.appendChild(row);
+      // Col 3: Prev
+      const colPrev = document.createElement("span");
+      colPrev.textContent = predecessors[n.id] !== undefined ? predecessors[n.id] : "-";
+
+      row.appendChild(colNode);
+      row.appendChild(colDist);
+      row.appendChild(colPrev);
+      tableDiv.appendChild(row);
+    });
   });
 }
 
