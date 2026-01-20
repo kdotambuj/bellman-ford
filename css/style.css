@@ -5,9 +5,11 @@
   box-sizing: border-box;
 }
 
+
 [hidden] {
   display: none !important
 }
+
 
 html,
 body {
@@ -21,10 +23,12 @@ body {
   /* Allow vertical scroll when embedded */
 }
 
+
 body {
   background: radial-gradient(circle at top, #b5bbc8, #eaebf1);
   color: #e5e7eb;
 }
+
 
 
 /* Mode Selection Screen */
@@ -40,6 +44,7 @@ body {
   /* Internal scroll if parent too small */
 }
 
+
 #modeSelectionContainer {
   background: #ffffff;
   border-radius: 16px;
@@ -50,6 +55,7 @@ body {
   width: 100%;
 }
 
+
 #modeSelectionContainer h1 {
   margin: 0 0 10px 0;
   color: #000000;
@@ -57,11 +63,13 @@ body {
   font-weight: 600;
 }
 
+
 #modeSelectionContainer p {
   margin: 0 0 30px 0;
   color: #555555;
   font-size: 1.1rem;
 }
+
 
 #modeButtons {
   display: flex;
@@ -69,6 +77,7 @@ body {
   justify-content: center;
   flex-wrap: wrap;
 }
+
 
 .modeBtn {
   background: #2980b9;
@@ -87,28 +96,34 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+
 .modeBtn:hover {
   background: #3498db;
   transform: translateY(-2px);
 }
 
+
 .modeBtn:active {
   transform: translateY(-2px);
 }
 
+
 .modeIcon {
   font-size: 3rem;
 }
+
 
 .modeTitle {
   font-size: 1.2rem;
   font-weight: 600;
 }
 
+
 .modeDesc {
   font-size: 0.85rem;
   opacity: 0.9;
 }
+
 
 
 #mainContainer {
@@ -123,27 +138,36 @@ body {
   padding: 20px;
   background: transparent;
   overflow-x: hidden;
-  /* Allow vertical scroll when embedded */
+  
 }
+
 
 #container {
   width: 100%;
-  max-width: 1300px;
+  max-width: 1400px;
   flex: 1;
   /* Grow to fill available space */
-  min-height: 700;
+  min-height: 0;
   /* Allow flexbox shrinking */
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
-  padding: 30px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 20px;
   overflow-y: auto;
   /* Internal scroll for content */
-
+  
 }
+
+
+#mainPane {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 
 /* Virtual Labs Header */
 #vl-header {
@@ -157,6 +181,7 @@ body {
   box-shadow: none;
 }
 
+
 .vl-title {
   font-size: 1.5rem;
   font-weight: 500;
@@ -165,6 +190,7 @@ body {
   text-align: center;
   flex: 1;
 }
+
 
 .vl-btn {
   background: #2980b9;
@@ -178,29 +204,32 @@ body {
   cursor: pointer;
 }
 
+
 .vl-btn:hover {
   background: #3498db;
   /* Slightly lighter blue on hover */
 }
 
+
+
 #backToModeSelection {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #4360df;
+  background: #667eea;
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 8px 16px;
+  padding: 6px 12px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   font-weight: 500;
   transition: background 0.2s;
-  position:absolute;
-  left: 50px;
-  top: 40px;
-  font-size: small;
+  position: absolute;
+  top:30px;
+  left:20px;
+
+
+
 }
+
 
 #backToModeSelection:hover {
   background: #5568d3;
@@ -209,21 +238,36 @@ body {
 
 
 
+
 /* ================= Visual Section ================= */
+
 
 #visualSection {
   display: flex;
   gap: 12px;
-  height: calc(100vh - 130px);
+  height: calc(100vh - 200px);
   /* Dynamic height accounting for navbar/padding */
-  min-height: 600px;
+  min-height: 700px;
   /* Minimum usable height */
-  max-height: 1000px;
+  max-height: 900px;
   /* Maximum height to prevent overflow */
-  padding: 2px;
+  padding: 4px;
+
+
+  
 }
 
+
+#leftPanel {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+
 /* ---------- Left Controls ---------- */
+
 
 #visControls {
   width: 380px;
@@ -237,15 +281,30 @@ body {
   gap: 12px;
   font-size: 0.78rem;
   overflow-y: auto;
-  margin: 0
   /* Allow scrolling if controls get long */
 }
+
 
 /* Analysis Section */
 #analysisSection {
   border-top: 1px solid #e5e7eb;
   padding-top: 10px;
 }
+
+
+#distanceSection, #distanceSectionVis {
+  margin-top: 10px;
+}
+
+
+#distanceSection h3, #distanceSectionVis h3 {
+  margin: 0 0 6px 0;
+  font-size: 0.9rem;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 
 #analysisSection h3 {
   margin: 0 0 8px 0;
@@ -255,11 +314,13 @@ body {
   letter-spacing: 0.5px;
 }
 
+
 .analysis-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
+
 
 .analysis-card {
   background: #2980b9;
@@ -276,12 +337,14 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+
 .card-value {
   font-size: 1.1rem;
   /* Smaller font */
   font-weight: 700;
   color: #ffffff;
 }
+
 
 .card-label {
   font-size: 0.65rem;
@@ -291,12 +354,14 @@ body {
   margin-top: 2px;
 }
 
+
 .controlGroup label {
   font-weight: 500;
   margin-bottom: 4px;
   display: block;
   color: black
 }
+
 
 .controlGroup input,
 .controlGroup select {
@@ -306,6 +371,7 @@ body {
   border: 1px solid black;
   font-size: 0.78rem;
 }
+
 
 .controlGroup button {
   padding: 6px 12px;
@@ -319,36 +385,191 @@ body {
   transition: background 0.2s;
 }
 
+
 .controlGroup button:hover {
   background: #3498db;
   border-color: #3498db;
 }
 
+
 .simButtons {
   display: flex;
   gap: 6px;
+  margin-bottom: 20px;
+  
 }
+
 
 .simButtons button {
   flex: 1;
+  font-size: 0.7rem !important;
+  padding: 4px 8px !important;
+  font-weight: 500;
 }
+
 
 /* ---------- Graph Area ---------- */
 
+
 #graphArea {
   flex: 1;
+  min-width: 500px;
   background: #ffffff;
   border: 1px solid black;
   border-radius: 10px;
   padding: 6px;
 }
 
+
 #graphSvg {
   width: 100%;
   height: 100%;
 }
 
+
+/* ---------- Code Walkthrough ---------- */
+
+
+#codeSection {
+  display: none;
+  flex: 0.6;
+  min-width: 350px;
+}
+
+
+#codeSection.active {
+  display: flex;
+  flex-direction: column;
+}
+
+
+#codePanel {
+  background: #ffffff;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+  height: auto;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+}
+
+
+#negativeCycleNote {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-top: 10px;
+  font-size: 0.65rem;
+  color: #78350f;
+  line-height: 1.4;
+}
+
+
+#negativeCycleNote strong {
+  color: #92400e;
+  display: block;
+  margin-bottom: 4px;
+}
+
+
+#negativeCycleNote pre {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin: 4px 0;
+  font-family: "Consolas", "SFMono-Regular", "Courier New", monospace;
+  font-size: 0.6rem;
+  color: #92400e;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+
+#negativeCycleNote span {
+  display: block;
+  margin-top: 4px;
+}
+
+
+#codeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+
+#codeHeader h3 {
+  margin: 0;
+}
+
+
+#codeHeader p {
+  margin: 4px 0 0 0;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+
+#codeLegend {
+  font-size: 0.85rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+
+#codeWindow {
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+  font-family: "Consolas", "SFMono-Regular", "Courier New", monospace;
+  font-size: 0.65rem;
+}
+
+
+.code-line {
+  display: flex;
+  gap: 8px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  align-items: flex-start;
+}
+
+
+.line-number {
+  width: 28px;
+  text-align: right;
+  color: #6b7280;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+
+.code-text {
+  white-space: pre;
+  flex: 1;
+  color: #000000;
+}
+
+
+.code-line.active {
+  background: #fef08a;
+  color: #1f2937;
+}
+
+
 /* ---------- SVG Styling ---------- */
+
 
 .node {
   fill: #f8fafc;
@@ -357,15 +578,18 @@ body {
   transition: fill 0.3s ease;
 }
 
+
 .node.active {
   fill: #f4f2ed;
   stroke: #f59e0b;
   stroke-width: 3;
 }
 
+
 .node.visited {
   fill: #93c5fd;
 }
+
 
 .node.source {
   fill: rgb(230, 255, 230);
@@ -373,17 +597,20 @@ body {
   stroke-width: 3;
 }
 
+
 .node.updated {
   fill: #a78bfa;
   stroke: #7c3aed;
   stroke-width: 3;
 }
 
+
 .node.relaxed {
   fill: #60a5fa;
   stroke: #2563eb;
   stroke-width: 3;
 }
+
 
 /* Distance Table (Grid Layout) */
 #distanceTable {
@@ -396,6 +623,7 @@ body {
   display: flex;
   flex-direction: column;
 }
+
 
 .dist-header {
   display: grid;
@@ -410,6 +638,7 @@ body {
   top: 0;
 }
 
+
 .dist-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -422,7 +651,9 @@ body {
   font-weight: 500;
 }
 
+
 /* Removed duplicate/old table styles */
+
 
 #statusMessage.info {
   background: #e0f2fe;
@@ -431,12 +662,14 @@ body {
   /* Dark Blue for good contrast */
 }
 
+
 #statusMessage.success {
   background: #dcfce7;
   border: 1px solid #86efac;
   color: #14532d;
   /* Dark Green */
 }
+
 
 #statusMessage.warning {
   background: #fef3c7;
@@ -445,16 +678,32 @@ body {
   /* Dark Amber */
 }
 
+
 button#resetBtn {
   background: #d35400;
   /* Sober Orange for Reset */
   border-color: #d35400;
 }
 
+
 button#resetBtn:hover {
   background: #e67e22;
   border-color: #e67e22;
 }
+
+
+button#prevBtn {
+  background: #7c3aed;
+  /* Purple */
+  border-color: #7c3aed;
+}
+
+
+button#prevBtn:hover {
+  background: #8b5cf6;
+  border-color: #8b5cf6;
+}
+
 
 button#playBtn {
   background: #27ae60;
@@ -462,20 +711,25 @@ button#playBtn {
   border-color: #27ae60;
 }
 
+
 button#playBtn:hover {
   background: #2ecc71;
   border-color: #2ecc71;
 }
 
+
 /* Distance Table */
 /* Consolidated Table Styles Above */
 
+
 /* Consolidated styles are above. */
+
 
 /* Remove old table styles if conflicting */
 #distTable th {
   display: none;
 }
+
 
 .edge {
   stroke: #7f8c8d;
@@ -485,20 +739,62 @@ button#playBtn:hover {
   transition: stroke 0.3s ease;
 }
 
+
+.edge-group {
+  cursor: pointer;
+}
+
+
+.edge-hit {
+  stroke: transparent;
+  stroke-width: 16;
+  fill: none;
+}
+
+
+.edge-delete {
+  display: none;
+}
+
+
+.edge-delete circle {
+  fill: #ef4444;
+  stroke: #b91c1c;
+  stroke-width: 1;
+}
+
+
+.edge-delete text {
+  fill: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+
+.edge-group:hover .edge-delete {
+  display: block;
+}
+
+
 .edge.active {
   stroke: #d35400;
   /* Sober Orange for active edges */
   stroke-width: 3;
 }
 
+
 .edge.negative {
   stroke-dasharray: 5;
 }
+
 
 svg {
   width: 100%;
   height: 100%;
 }
+
 
 .node {
   fill: #fff;
@@ -506,6 +802,7 @@ svg {
   /* Dark Blue-Gray Stroke */
   stroke-width: 2;
 }
+
 
 .node.source {
   fill: #27ae60;
@@ -515,17 +812,20 @@ svg {
   /* For text if needed */
 }
 
+
 .node.active {
   fill: #f39c12;
   /* Sober Yellow/Amber */
   stroke: #f1c40f;
 }
 
+
 .node.updated {
   fill: #e67e22;
   /* Sober Orange */
   stroke: #d35400;
 }
+
 
 .node-text {
   text-anchor: middle;
@@ -534,14 +834,17 @@ svg {
   pointer-events: none;
 }
 
+
 .edge {
   stroke: #333;
   stroke-width: 2;
 }
 
+
 .edge.negative {
   stroke: red;
 }
+
 
 .edge-weight {
   font-size: 12px;
@@ -554,9 +857,18 @@ svg {
 }
 
 
+.edge-weight.editable {
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+}
+
+
+
 .edge.active {
   stroke-width: 4;
 }
+
 
 /*  MODAL  */
 /* ---------- MODAL ---------- */
@@ -570,9 +882,11 @@ svg {
   z-index: 1000;
 }
 
+
 .modal.hidden {
   display: none !important;
 }
+
 
 .modal-content {
   background: white;
@@ -587,11 +901,13 @@ svg {
   overflow: hidden;
 }
 
+
 .modal-content.small {
   width: 320px;
   height: auto;
   padding: 16px;
 }
+
 
 
 
@@ -605,11 +921,13 @@ svg {
   background: #ffffff;
 }
 
+
 #modal-heading {
   font-size: 15px;
   font-weight: 600;
   color: #000;
 }
+
 
 .modal-header button {
   border: none;
@@ -620,10 +938,12 @@ svg {
   padding: 4px 8px;
 }
 
+
 .modal-header button:hover {
   background: #f3f4f6;
   border-radius: 6px;
 }
+
 
 /* ================= SVG AREA ================= */
 #manual-svg {
@@ -634,6 +954,7 @@ svg {
   cursor: crosshair;
 }
 
+
 /* ================= FOOTER / TOOLBAR ================= */
 .toolbar {
   padding: 14px 20px;
@@ -643,6 +964,7 @@ svg {
   justify-content: space-between;
   align-items: center;
 }
+
 
 /* ================= BUTTONS ================= */
 button {
@@ -657,9 +979,11 @@ button {
   transition: background 0.15s ease, border 0.15s ease;
 }
 
+
 button:hover {
   background: #f3f4f6;
 }
+
 
 button.primary {
   background: #000;
@@ -667,15 +991,19 @@ button.primary {
   border: 1px solid #000;
 }
 
+
 button.primary:hover {
   background: #111;
 }
+
 
 button.secondary {
   background: #ffffff;
 }
 
+
 /* ================= GRAPH ELEMENTS ================= */
+
 
 /* Nodes */
 .manual-node {
@@ -687,9 +1015,11 @@ button.secondary {
   transition: all 0.15s ease;
 }
 
+
 .manual-node:hover {
   fill: #f3f4f6;
 }
+
 
 .manual-node.selected {
   fill: #f39c12;
@@ -697,6 +1027,7 @@ button.secondary {
   stroke: #e67e22;
   stroke-width: 2.5;
 }
+
 
 /* Node labels */
 .node-label {
@@ -707,6 +1038,7 @@ button.secondary {
   pointer-events: none;
 }
 
+
 /* Edges */
 .manual-edge {
   stroke: #7f8c8d;
@@ -716,10 +1048,12 @@ button.secondary {
   transition: stroke 0.15s ease;
 }
 
+
 .manual-edge:hover {
   stroke: #d35400;
   /* Sober Orange */
 }
+
 
 /* Edge weight */
 .edge-weight {
@@ -729,7 +1063,9 @@ button.secondary {
   pointer-events: none;
   text-anchor: middle;
 
+
 }
+
 
 /* Edge weight background */
 .edge-weight-bg {
@@ -739,6 +1075,7 @@ button.secondary {
   rx: 8;
   ry: 8
 }
+
 
 /* ================= ERROR BADGE ================= */
 #manual-error {
@@ -754,9 +1091,11 @@ button.secondary {
   font-weight: 500;
 }
 
+
 #manual-error.hidden {
   display: none;
 }
+
 
 /* ================= EDGE MODAL ================= */
 .modal-actions {
@@ -766,6 +1105,7 @@ button.secondary {
   gap: 12px;
 }
 
+
 /* ================= MODAL TEXT VISIBILITY FIX ================= */
 .modal-content h3 {
   color: #111827;
@@ -773,20 +1113,24 @@ button.secondary {
   margin-top: 0;
 }
 
+
 #edge-info {
   color: #374151;
   /* readable gray */
   margin-bottom: 12px;
 }
 
+
 .modal-content input {
   color: #111827;
   border-color: #d1d5db;
 }
 
+
 .modal-content input::placeholder {
   color: #9ca3af;
 }
+
 
 /* ================= HEADING ================= */
 #modal-heading {
@@ -794,6 +1138,7 @@ button.secondary {
   font-weight: 600;
   color: #111827;
 }
+
 
 /* Manual Instructions */
 .manual-instructions {
@@ -808,6 +1153,7 @@ button.secondary {
   justify-content: center;
 }
 
+
 .manual-instructions p {
   margin: 0;
   font-size: 0.75rem;
@@ -815,11 +1161,14 @@ button.secondary {
   font-weight: 500;
 }
 
+
 .manual-instructions strong {
   color: #0f172a;
 }
 
+
 /* ================= RESPONSIVE MEDIA QUERIES ================= */
+
 
 /* For embedded mode or smaller viewports */
 @media (max-height: 800px) {
@@ -828,10 +1177,12 @@ button.secondary {
     min-height: 500px;
   }
 
+
   #container {
     padding: 20px;
   }
 }
+
 
 /* For very small viewports or heavily embedded scenarios */
 @media (max-height: 600px) {
@@ -840,15 +1191,18 @@ button.secondary {
     min-height: 400px;
   }
 
+
   #mainContainer {
     padding: 10px;
   }
+
 
   #container {
     padding: 15px;
     gap: 15px;
   }
 }
+
 
 /* Tablet and smaller screens */
 @media (max-width: 1024px) {
@@ -858,10 +1212,12 @@ button.secondary {
     min-height: 800px;
   }
 
+
   #visControls {
     width: 100%;
     max-height: 300px;
   }
+
 
   #graphArea {
     min-height: 500px;
