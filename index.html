@@ -56,6 +56,7 @@
 
          <div id="mainPane">
             <div id="visualSection">
+               <div id="leftPanel">
                <!-- LEFT: CONTROLS -->
                <div id="visControls">
                   <div class="controlGroup">
@@ -126,12 +127,12 @@
                      <label>Simulation</label>
                      <div class="simButtons">
                         <button id="playBtn">Play</button>
+                        <button id="prevBtn">Prev Step</button>
                         <button id="nextBtn">Next Step</button>
                         <button id="resetBtn">Reset</button>
                      </div>
                   </div>
 
-                  <div id="statusMessage" class="info"></div>
                   <div id="statusMessage" class="info"></div>
 
                   <div id="analysisSection">
@@ -148,16 +149,28 @@
                      </div>
                   </div>
 
-                  <div id="distanceTable"></div>
                </div>
 
-               <!-- RIGHT: GRAPH -->
+               <!-- CENTER: GRAPH -->
                <div id="graphArea">
                   <svg id="graphSvg"></svg>
                </div>
-            </div>
+               </div>
 
-            <div id="codeSection"></div>
+            <!-- RIGHT: CODE PANEL -->
+            <div id="codeSection" class="hidden">
+               <div id="codePanel">
+                  <div id="codeWindow">
+                     <div id="codeLines"></div>
+                  </div>
+
+                  <div id="distanceSection">
+                     
+                     <div id="distanceTable"></div>
+                  </div>
+               </div>
+            </div>
+            </div>
          </div>
       </div>
    </div>

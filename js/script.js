@@ -12,6 +12,8 @@ const codeSection = $('codeSection');
 // Timer variables
 let visTimer = null;
 let codeTimer = null;
+let algorithmStartTime = null;
+let executionTime = 0;
 
 // Bellman-Ford Globals
 let nodes = [];
@@ -23,6 +25,76 @@ let nodeStates = {};
 let isPlaying = false;
 let algorithmSteps = []; // Track algorithm steps
 
+// Code walkthrough snippet and highlighting map
+const codeSnippet = [
+  { line: 1, text: "const dist = Array(V).fill(Infinity);" },
+  { line: 2, text: "dist[source] = 0;" },
+  { line: 3, text: "for (let i = 0; i < V - 1; i++) {" },
+  { line: 4, text: "  for (const { u, v, w } of edges) {" },
+  { line: 5, text: "    if (dist[u] !== Infinity && dist[u] + w < dist[v]) {" },
+  { line: 6, text: "      dist[v] = dist[u] + w;" },
+  { line: 7, text: "      prev[v] = u;" },
+  { line: 8, text: "    }" },
+  { line: 9, text: "  }" },
+  { line: 10, text: "}" },
+  { line: 11, text: "for (const { u, v, w } of edges) {" },
+  { line: 12, text: "  if (dist[u] + w < dist[v]) reportNegativeCycle();" },
+  { line: 13, text: "}" }
+];
+
+const codeLineMap = {
+  init: [1, 2],
+  "iteration-start": [3],
+  check: [4, 5],
+  relax: [5, 6, 7],
+  "no-relax": [5],
+  "early-stop": [3],
+  "negative-cycle": [11, 12],
+  complete: [10]
+};
+
+function renderCodeSnippet() {
+  const container = $("codeLines");
+  if (!container) return;
+
+  container.innerHTML = codeSnippet
+    .map(({ line, text }) => `
+      <div class="code-line" data-line="${line}">
+        <span class="line-number">${line}</span>
+        <span class="code-text">${text}</span>
+      </div>
+    `)
+    .join("");
+}
+
+function highlightCodeLines(lineNumbers = []) {
+  const container = $("codeLines");
+  if (!container) return;
+
+  const lines = container.querySelectorAll(".code-line");
+  lines.forEach(line => line.classList.remove("active"));
+
+  let target = null;
+  lineNumbers.forEach(num => {
+    const el = container.querySelector(`[data-line="${num}"]`);
+    if (el) {
+      el.classList.add("active");
+      target = el;
+    }
+  });
+
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+function highlightCodeForStep(stepType) {
+  const lines = codeLineMap[stepType] || [];
+  highlightCodeLines(lines);
+}
+
+renderCodeSnippet();
+
 modeButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     const mode = btn.dataset.mode;
@@ -31,10 +103,12 @@ modeButtons.forEach(btn => {
 
     if (mode === 'visualization') {
       visualSection.style.display = "flex";
+      codeSection.classList.remove("active");
       codeSection.style.display = "none";
     } else {
-      visualSection.style.display = "none";
-      codeSection.style.display = "flex";
+      visualSection.style.display = "flex";
+      codeSection.style.display = "block";
+      codeSection.classList.add("active");
     }
 
     // Draw initially
@@ -47,6 +121,8 @@ modeButtons.forEach(btn => {
 backToModeSelectionBtn.addEventListener('click', () => {
   mainContainer.style.display = 'none';
   modeSelection.style.display = 'flex';
+  codeSection.classList.remove("active");
+  codeSection.style.display = "none";
 
   const visPlayPause = $('visPlayPause');
   const visNext = $('visNext');
@@ -472,6 +548,7 @@ function drawNodes() {
 
 function generateBellmanFordSteps() {
   algorithmSteps = [];
+  algorithmStartTime = performance.now();
   const n = nodes.length;
   const V = n; // Number of vertices
   const E = edges.length; // Number of edges
@@ -611,6 +688,12 @@ function executeStep(step) {
   distances = [...step.distances];
   if (step.predecessors) predecessors = [...step.predecessors]; // Restore predecessors
 
+  // Calculate execution time
+  if (algorithmStartTime) {
+    executionTime = Math.round(performance.now() - algorithmStartTime);
+    const timeEl = document.getElementById("executionTime");
+    if (timeEl) timeEl.textContent = executionTime + "ms";
+  }
 
   // Reset all node states
   nodes.forEach(n => {
@@ -644,6 +727,9 @@ function executeStep(step) {
   if (step.type === 'complete') msgType = 'success';
 
   setStatusMessage(step.message, msgType);
+
+  // Update code walkthrough highlighting
+  highlightCodeForStep(step.type);
 
   // Update Analysis Relax Count
   const relaxEl = document.getElementById("relaxCount");
@@ -687,6 +773,9 @@ function resetAlgorithm() {
 
   const relaxEl = document.getElementById("relaxCount");
   if (relaxEl) relaxEl.textContent = "0";
+
+  // Clear any highlighted code lines
+  highlightCodeLines([]);
 }
 
 /* ================= BUTTON HANDLERS ================= */
@@ -767,6 +856,39 @@ if (nextBtn) {
     }
 
     runNextStep();
+  };
+}
+
+function runPrevStep() {
+  if (currentStepIndex <= 0) {
+    setStatusMessage("Already at the beginning of the algorithm.", "info");
+    return;
+  }
+
+  currentStepIndex--;
+  executeStep(algorithmSteps[currentStepIndex]);
+}
+
+const prevBtn = $("prevBtn");
+if (prevBtn) {
+  prevBtn.onclick = () => {
+    // Pause if playing
+    if (isPlaying) {
+      if (visTimer) {
+        clearInterval(visTimer);
+        visTimer = null;
+      }
+      isPlaying = false;
+      const playBtn = $("playBtn");
+      if (playBtn) playBtn.textContent = 'Play';
+    }
+
+    // Generate steps if not done
+    if (algorithmSteps.length === 0) {
+      generateBellmanFordSteps();
+    }
+
+    runPrevStep();
   };
 }
 
