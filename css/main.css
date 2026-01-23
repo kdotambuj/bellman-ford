@@ -223,11 +223,8 @@ body {
   font-weight: 500;
   transition: background 0.2s;
   position: absolute;
-  top:30px;
-  left:20px;
-
-
-
+  top:5px;
+  left:5px;
 }
 
 
