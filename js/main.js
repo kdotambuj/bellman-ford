@@ -983,7 +983,7 @@ if (nextBtn) {
         visTimer = null;
       }
       isPlaying = false;
-      const playBtn = $("playPauseBtn");
+      const playBtn = $("playBtn");
       if (playBtn) playBtn.textContent = 'Play';
     }
 
