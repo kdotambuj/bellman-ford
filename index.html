@@ -2,10 +2,12 @@
 <title>Bellman Ford Algorithm</title>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link href="css/style.css" rel="stylesheet" />
+<link href="css/main.css" rel="stylesheet" />
+
 
 <body>
    <!-- <header id="title">Bellman Ford Algorithm</header> -->
+
 
    <div id="modeSelection">
       <div id="modeSelectionContainer">
@@ -18,6 +20,7 @@
                      <line x1="12" y1="7" x2="6" y2="13" stroke="currentColor" stroke-width="2" />
                      <line x1="12" y1="7" x2="18" y2="13" stroke="currentColor" stroke-width="2" />
 
+
                      <!-- nodes -->
                      <circle cx="12" cy="5" r="2" fill="currentColor" />
                      <circle cx="6" cy="15" r="2" fill="currentColor" />
@@ -25,9 +28,11 @@
                   </svg>
                </span>
 
+
                <span class="modeTitle">Visualization</span>
                <span class="modeDesc">Watch step-by-step visual animations</span>
             </button>
+
 
             <button class="modeBtn" data-mode="code">
                <span class="modeIcon">
@@ -39,6 +44,7 @@
                   </svg>
                </span>
 
+
                <span class="modeTitle">Code Walkthrough</span>
                <span class="modeDesc">Follow the code line by line</span>
             </button>
@@ -46,13 +52,15 @@
       </div>
    </div>
 
+
    <div id="mainContainer">
+      <button id="backToModeSelection">
+               ← Back
+      </button>
+
+
       <div id="container">
-         <div id="topPane">
-            <button id="backToModeSelection">
-               ← Back to Mode Selection
-            </button>
-         </div>
+
 
          <div id="mainPane">
             <div id="visualSection">
@@ -60,14 +68,16 @@
                <!-- LEFT: CONTROLS -->
                <div id="visControls">
                   <div class="controlGroup">
-                     <label>Vertices (3-6)</label>
+                     <label>Vertices (3-7)</label>
                      <input type="number" id="vertexCount" min="3" max="7" value="5" />
                   </div>
+
 
                   <div class="controlGroup">
                      <label>Source Vertex</label>
                      <input type="number" id="sourceVertex" min="0" max="6" value="0" />
                   </div>
+
 
                   <div class="controlGroup">
                      <label>Graph</label>
@@ -75,14 +85,17 @@
                      <button id="build-manually">Build Manually</button>
                   </div>
 
+
                   <!-- ================= MAIN MODAL ================= -->
                   <div id="manual-modal" class="modal hidden">
                      <div class="modal-content">
+
 
                         <div class="modal-header">
                            <span id="modal-heading">Build Graph</span>
                            <button class="close-manual">✕</button>
                         </div>
+
 
                         <div class="manual-instructions">
                            <p>1. <strong>Click</strong> a node to select it (Yellow).</p>
@@ -92,14 +105,17 @@
                         </div>
                         <svg id="manual-svg"></svg>
 
+
                         <div class="toolbar">
                            <button class="close-manual secondary">Cancel</button>
                            <button id="apply-manual" class="primary">Apply</button>
                         </div>
 
+
                         <div id="manual-error" class="hidden"></div>
                      </div>
                   </div>
+
 
                   <!-- ================= EDGE MODAL ================= -->
                   <div id="edge-modal" class="modal hidden">
@@ -114,6 +130,7 @@
                      </div>
                   </div>
 
+
                   <div class="controlGroup">
                      <label>Speed</label>
                      <select id="speedSelect">
@@ -122,6 +139,7 @@
                         <option value="300">Fast</option>
                      </select>
                   </div>
+
 
                   <div class="controlGroup">
                      <label>Simulation</label>
@@ -133,7 +151,9 @@
                      </div>
                   </div>
 
+
                   <div id="statusMessage" class="info"></div>
+
 
                   <div id="analysisSection">
                      <h3>Analysis</h3>
@@ -144,7 +164,7 @@
                         </div>
                         <div class="analysis-card">
                            <span id="complexityValue" class="card-value">O(0)</span>
-                           <span class="card-label">Complexity (VE)</span>
+                           <span class="card-label">Complexity (V X E)</span>
                         </div>
                      </div>
                   </div>
@@ -155,11 +175,13 @@
                   </div>
                </div>
 
+
                <!-- CENTER: GRAPH -->
                <div id="graphArea">
                   <svg id="graphSvg"></svg>
                </div>
                </div>
+
 
             <!-- RIGHT: CODE PANEL -->
             <div id="codeSection" class="hidden">
@@ -168,9 +190,18 @@
                      <div id="codeLines"></div>
                   </div>
 
+
                   <div id="distanceSection">
                      
                      <div id="distanceTable"></div>
+                  </div>
+
+
+                  <div id="negativeCycleNote">
+                     <strong>Negative Cycle Detection:</strong>
+                     <pre>for (const { u, v, w } of edges)
+  if (dist[u] + w &lt; dist[v]) → Negative cycle!</pre>
+                     <span>After V-1 iterations, if any edge can still be relaxed, the graph contains a negative cycle.</span>
                   </div>
                </div>
             </div>
@@ -180,6 +211,8 @@
    </div>
 </body>
 
-<script src="js/script.js"></script>
+
+<script src="js/main.js"></script>
+
 
 </html>
