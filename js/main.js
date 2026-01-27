@@ -365,6 +365,56 @@ function setStatusMessage(message, type = "info") {
   statusDiv.className = type;
 }
 
+function buildPath(destination) {
+  if (distances[destination] === Infinity) {
+    return null; // No path exists
+  }
+  
+  const path = [];
+  let current = destination;
+  
+  while (current !== "-" && current !== undefined) {
+    path.unshift(current);
+    if (current === sourceNode) break;
+    current = predecessors[current];
+  }
+  
+  return path;
+}
+
+function renderShortestPaths() {
+  const pathsSection = $("shortestPathsSection");
+  const pathsList = $("shortestPathsList");
+  
+  if (!pathsSection || !pathsList) return;
+  
+  // Clear previous paths
+  pathsList.innerHTML = "";
+  
+  // Show the section
+  pathsSection.classList.remove("hidden");
+  
+  // Generate path for each node
+  nodes.forEach(node => {
+    if (node.id === sourceNode) return; // Skip source node
+    
+    const pathItem = document.createElement("div");
+    pathItem.className = "path-item";
+    
+    const path = buildPath(node.id);
+    
+    if (path && path.length > 0) {
+      const pathStr = path.join(" → ");
+      const dist = distances[node.id];
+      pathItem.innerHTML = `<span class="path-label">To node ${node.id}:</span><span class="path-route">${pathStr}</span><span class="path-distance">(distance: ${dist})</span>`;
+    } else {
+      pathItem.innerHTML = `<span class="path-label">To node ${node.id}:</span><span class="path-route">No path (unreachable)</span>`;
+    }
+    
+    pathsList.appendChild(pathItem);
+  });
+}
+
 
 
 function randomGraph() {
@@ -771,6 +821,7 @@ function generateBellmanFordSteps() {
       type: 'negative-cycle',
       message: '⚠️ Negative cycle detected! Shortest paths are undefined.',
       distances: [...dist],
+      predecessors: [...currentPredecessors],
       activeEdge: null,
       activeNodes: [],
       updatedNode: null
@@ -855,6 +906,15 @@ function executeStep(step) {
   if (relaxEl && step.relaxCount !== undefined) {
     relaxEl.textContent = step.relaxCount;
   }
+
+  // Show shortest paths ONLY when algorithm completes
+  const pathsSection = $("shortestPathsSection");
+  if (step.type === 'complete') {
+    renderShortestPaths();
+  } else {
+    // Hide paths section for all other steps
+    if (pathsSection) pathsSection.classList.add("hidden");
+  }
 }
 
 
@@ -862,7 +922,7 @@ function runNextStep() {
   if (currentStepIndex >= algorithmSteps.length) {
     isAlgorithmComplete = true;
     isPlaying = false;
-    const playBtn = $("playPauseBtn");
+    const playBtn = $("playBtn");
     if (playBtn) playBtn.textContent = 'Play';
     if (visTimer) {
       clearInterval(visTimer);
@@ -902,6 +962,10 @@ function resetAlgorithm() {
 
   // Clear any highlighted code lines
   highlightCodeLines([]);
+
+  // Hide shortest paths section
+  const pathsSection = $("shortestPathsSection");
+  if (pathsSection) pathsSection.classList.add("hidden");
 }
 
 
