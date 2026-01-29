@@ -255,6 +255,7 @@ function updateSourceNodeSelector() {
   if (!sourceInput) return;
   sourceInput.value = sourceNode;
   sourceInput.max = nodes.length - 1;
+  sourceInput.placeholder = `(0-${nodes.length - 1})`;
 }
 
 
@@ -265,14 +266,15 @@ if (sourceInput) {
     let val = parseInt(sourceInput.value);
     if (isNaN(val)) val = 0;
 
-
     if (val < 0) val = 0;
-    if (val >= nodes.length) val = nodes.length - 1;
-
+    if (val >= nodes.length) {
+      alert(`Select a value from 0 to ${nodes.length - 1}`);
+      sourceInput.value = sourceNode;
+      return;
+    }
 
     sourceInput.value = val;
     sourceNode = val;
-
 
     // Reset and redraw
     resetAlgorithm();
